@@ -33,9 +33,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: const CustomScrollView(
+      body: CustomScrollView(
         slivers: [
-          SliverAppBar(
+          const SliverAppBar(
             pinned: true,
             snap: true,
             floating: true,
@@ -43,14 +43,32 @@ class HomeScreen extends StatelessWidget {
             //backgroundColor: theme.primaryColor,
             centerTitle: true,
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(70),
+              preferredSize: Size.fromHeight(80),
               child: SearchButton(),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          SliverList.builder(
+            itemBuilder: (context, index) => Container(
+              width: double.infinity,
+              height: 40,
+              margin: const EdgeInsets.symmetric(horizontal: 16)
+                  .copyWith(bottom: 10),
+              decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(12)),
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          backgroundColor: theme.primaryColor, onPressed: () {}),
+        backgroundColor: theme.primaryColor,
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFFEFF1F3),
+        ),
+      ),
     );
   }
 }
