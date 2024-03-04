@@ -24,41 +24,30 @@ class MemoRise extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
   });
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  var _selectedPageIndex = 0;
+  final _pageController = PageController();
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            pinned: true,
-            snap: true,
-            floating: true,
-            title: Text('MemoRise'),
-            //backgroundColor: theme.primaryColor,
-            centerTitle: true,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(80),
-              child: SearchButton(),
-            ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          SliverList.builder(
-            itemBuilder: (context, index) => Container(
-              width: double.infinity,
-              height: 40,
-              margin: const EdgeInsets.symmetric(horizontal: 16)
-                  .copyWith(bottom: 10),
-              decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(12)),
-            ),
-          ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (value) {
+          setState(() => _selectedPageIndex = value);
+        },
+        children: const [
+          NotesScreen(),
+          Scaffold(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -68,6 +57,76 @@ class HomeScreen extends StatelessWidget {
           Icons.add,
           color: Color(0xFFEFF1F3),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: theme.primaryColor,
+        unselectedItemColor: theme.hintColor,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
+        currentIndex: _selectedPageIndex,
+        onTap: _openPage,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.notes), label: 'Notes'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings')
+        ],
+      ),
+    );
+  }
+
+  void _openPage(int index) {
+    setState(() => _selectedPageIndex = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+  }
+}
+
+class NotesScreen extends StatelessWidget {
+  const NotesScreen({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          pinned: true,
+          snap: true,
+          floating: true,
+          title: Text('MemoRise'),
+          //backgroundColor: theme.primaryColor,
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(80),
+            child: SearchButton(),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverList.builder(
+          itemBuilder: (context, index) => const MemorListCard(),
+        ),
+      ],
+    );
+  }
+}
+
+class MemorListCard extends StatelessWidget {
+  const MemorListCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+          color: theme.cardColor, borderRadius: BorderRadius.circular(12)),
+      child: Text(
+        'Card',
+        style: theme.textTheme.bodyLarge,
       ),
     );
   }
