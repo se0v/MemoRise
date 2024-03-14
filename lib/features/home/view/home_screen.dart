@@ -30,7 +30,58 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.primaryColor,
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                TextEditingController controller1 = TextEditingController();
+                TextEditingController controller2 = TextEditingController();
+                return AlertDialog(
+                  title: const Text('Add a Note'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: controller1,
+                        cursorColor: Theme.of(context).colorScheme.secondary,
+                        decoration: InputDecoration(
+                          hintText: 'Title...',
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: controller2,
+                        cursorColor: Theme.of(context).colorScheme.secondary,
+                        decoration: InputDecoration(
+                          hintText: 'Description...',
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [],
+                );
+              });
+        },
         child: const Icon(
           Icons.add,
           color: Color(0xFFEFF1F3),
