@@ -1,21 +1,21 @@
-class Note {
+class Notes {
   final String title;
   final String subtitle;
 
-  Note({this.title = '', this.subtitle = ''});
+  Notes({this.title = '', this.subtitle = ''});
 
-  Note copyWith({
+  Notes copyWith({
     String? title,
     String? subtitle,
   }) {
-    return Note(
+    return Notes(
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
     );
   }
 
-  factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(
+  factory Notes.fromJson(Map<String, dynamic> json) {
+    return Notes(
       title: json['title'],
       subtitle: json['subtitle'],
     );
