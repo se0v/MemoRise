@@ -125,7 +125,7 @@ class _NotesScreenState extends State<NotesScreen> {
             title: const Text(
               'MemoRise',
               style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w400),
             ),
             centerTitle: true,
             floating: true,
@@ -140,7 +140,25 @@ class _NotesScreenState extends State<NotesScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final note = state.notes[index];
-                        return MemorListCard(note: note);
+                        return Dismissible(
+                          key: UniqueKey(),
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerLeft,
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 16.0),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          direction: DismissDirection.startToEnd,
+                          onDismissed: (_) {
+                            removeTodo(note);
+                          },
+                          child: MemorListCard(note: note),
+                        );
                       },
                       childCount: state.notes.length,
                     ),
