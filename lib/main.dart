@@ -10,14 +10,12 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getTemporaryDirectory(),
   );
-  //Bloc.observer = SimpleBlocObserver();
   runApp(const MemoRise());
 }
 
 class MemoRise extends StatelessWidget {
   const MemoRise({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     const primaryColor = Color.fromARGB(255, 183, 58, 58);

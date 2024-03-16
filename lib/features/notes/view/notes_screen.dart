@@ -1,131 +1,202 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memorise/features/notes/bloc/notes_bloc.dart';
-
-import '../data/notes.dart';
+import 'package:memorise/features/notes/data/notes.dart';
 
 class NotesScreen extends StatefulWidget {
   const NotesScreen({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  // ignore: non_constant_identifier_names
-  AddNote(Notes notes) {
+  late TextEditingController _controller1;
+  late TextEditingController _controller2;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller1 = TextEditingController();
+    _controller2 = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: theme.primaryColor,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Add a Note'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _controller1,
+                      cursorColor: theme.colorScheme.secondary,
+                      decoration: InputDecoration(
+                        hintText: 'Title...',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.secondary,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _controller2,
+                      cursorColor: theme.colorScheme.secondary,
+                      decoration: InputDecoration(
+                        hintText: 'Description...',
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(
+                            color: theme.colorScheme.secondary,
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextButton(
+                      onPressed: () {
+                        final newTodo = Notes(
+                          title: _controller1.text,
+                          subtitle: _controller2.text,
+                        );
+                        addTodo(newTodo);
+                        _controller1.clear();
+                        _controller2.clear();
+                        Navigator.pop(context);
+                      },
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                            color: theme.colorScheme.secondary,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        foregroundColor: theme.colorScheme.secondary,
+                      ),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: const Icon(
+                          Icons.check_box,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFFEFF1F3),
+        ),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: theme.colorScheme.background,
+            elevation: 0,
+            title: const Text(
+              'MemoRise',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+            ),
+            centerTitle: true,
+            floating: true,
+            snap: true,
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(8.0),
+            sliver: BlocBuilder<NotesBloc, NotesState>(
+              builder: (context, state) {
+                if (state.status == NotesStatus.success) {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final note = state.notes[index];
+                        return MemorListCard(note: note);
+                      },
+                      childCount: state.notes.length,
+                    ),
+                  );
+                } else if (state.status == NotesStatus.loading) {
+                  return const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else {
+                  return SliverFillRemaining(child: Container());
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addTodo(Notes notes) {
     context.read<NotesBloc>().add(
           AddNote(notes),
         );
   }
 
-  // ignore: non_constant_identifier_names
-  RemoveNotes(Notes notes) {
+  void removeTodo(Notes notes) {
     context.read<NotesBloc>().add(
           RemoveNotes(notes),
         );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          pinned: true,
-          snap: true,
-          floating: true,
-          title: const Text('MemoRise'),
-          //backgroundColor: theme.primaryColor,
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(80),
-            child:
-                BlocBuilder<NotesBloc, NotesState>(builder: (context, state) {
-              if (state.status == NotesStatus.success) {
-                // const SliverToBoxAdapter(child: SizedBox(height: 16));
-                // return SliverList.builder(
-                //   itemBuilder: (context, index) => const MemorListCard(),
-                // );
-                return Container();
-              } else if (state.status == NotesStatus.success) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return Container();
-              }
-            }
-                    //SearchButton(),
-                    ),
-          ),
-          //   const SliverToBoxAdapter(child: SizedBox(height: 16)),
-          //   SliverList.builder(
-          //     itemBuilder: (context, index) => const MemorListCard(),
-        ),
-      ],
-    );
+  void dispose() {
+    _controller1.dispose();
+    _controller2.dispose();
+    super.dispose();
   }
 }
 
 class MemorListCard extends StatelessWidget {
-  const MemorListCard({super.key});
+  final Notes note;
+
+  const MemorListCard({Key? key, required this.note}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-          color: theme.cardColor, borderRadius: BorderRadius.circular(12)),
-      child: Text(
-        'Card',
-        style: theme.textTheme.bodyLarge,
+    return Card(
+      color: theme.colorScheme.background,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
       ),
-    );
-  }
-}
-
-class SearchButton extends StatelessWidget {
-  const SearchButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: theme.hintColor.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16)),
-      child: Row(
-        children: [
-          const Icon(Icons.search),
-          const SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
-                  fontSize: 18,
-                  color: theme.hintColor.withOpacity(0.4),
-                  fontWeight: FontWeight.w700,
-                ),
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
-              ),
-              style: TextStyle(
-                fontSize: 18,
-                color: theme.hintColor.withOpacity(0.8),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
+      child: ListTile(
+        title: Text(note.title),
+        subtitle: Text(note.subtitle),
       ),
     );
   }
