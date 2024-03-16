@@ -128,9 +128,8 @@ class _NotesScreenState extends State<NotesScreen> {
                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
-            floating: true, // делает аппбар плавающим
-            snap:
-                true, // делает аппбар возвращающимся в исходное положение, если его отпустить в середине прокрутки
+            floating: true,
+            snap: true,
           ),
           SliverPadding(
             padding: const EdgeInsets.all(8.0),
