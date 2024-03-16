@@ -125,11 +125,12 @@ class _NotesScreenState extends State<NotesScreen> {
             title: const Text(
               'MemoRise',
               style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
-            floating: true,
-            snap: true,
+            floating: true, // делает аппбар плавающим
+            snap:
+                true, // делает аппбар возвращающимся в исходное положение, если его отпустить в середине прокрутки
           ),
           SliverPadding(
             padding: const EdgeInsets.all(8.0),
