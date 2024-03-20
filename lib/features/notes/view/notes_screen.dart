@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memorise/features/notes/bloc/notes_bloc.dart';
 import 'package:memorise/features/notes/data/notes.dart';
+import 'package:memorise/local_notifications.dart';
 
 class NotesScreen extends StatefulWidget {
   const NotesScreen({
@@ -80,6 +81,10 @@ class _NotesScreenState extends State<NotesScreen> {
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
                       onPressed: () {
+                        LocalNotifications.showPeriodicNotifications(
+                            title: "Periodic Notification",
+                            body: "This is a TOYOTA",
+                            payload: "This is a SANDWICH");
                         final newTodo = Notes(
                           title: _controller1.text,
                           subtitle: _controller2.text,
@@ -101,8 +106,8 @@ class _NotesScreenState extends State<NotesScreen> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: const Icon(
-                          Icons.check_box,
-                          color: Colors.green,
+                          Icons.save,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -210,8 +215,8 @@ class MemorListCard extends StatelessWidget {
       color: theme.colorScheme.background,
       elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: theme.primaryColor, width: 0.5)),
       child: ListTile(
         title: Text(note.title),
         subtitle: Text(note.subtitle),
