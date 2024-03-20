@@ -31,6 +31,10 @@ class _NotesScreenState extends State<NotesScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.primaryColor,
         onPressed: () {
+          LocalNotifications.showSimpleNotifications(
+              title: "Periodic Notification",
+              body: "This is a SANDWICH",
+              payload: "This is a TOYOTA");
           showDialog(
             context: context,
             builder: (context) {
