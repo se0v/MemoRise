@@ -31,10 +31,6 @@ class _NotesScreenState extends State<NotesScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.primaryColor,
         onPressed: () {
-          LocalNotifications.showSimpleNotifications(
-              title: "Periodic Notification",
-              body: "This is a SANDWICH",
-              payload: "This is a TOYOTA");
           showDialog(
             context: context,
             builder: (context) {
@@ -85,10 +81,6 @@ class _NotesScreenState extends State<NotesScreen> {
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
                       onPressed: () {
-                        LocalNotifications.showPeriodicNotifications(
-                            title: "Periodic Notification",
-                            body: "This is a TOYOTA",
-                            payload: "This is a SANDWICH");
                         final newTodo = Notes(
                           title: _controller1.text,
                           subtitle: _controller2.text,
@@ -162,9 +154,29 @@ class _NotesScreenState extends State<NotesScreen> {
                               ),
                             ),
                           ),
-                          direction: DismissDirection.startToEnd,
-                          onDismissed: (_) {
-                            removeTodo(note);
+                          secondaryBackground: Container(
+                            color: Colors.green,
+                            alignment: Alignment.centerRight,
+                            child: const Padding(
+                              padding: EdgeInsets.only(right: 16.0),
+                              child: Icon(
+                                Icons.send_time_extension,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          direction: DismissDirection.horizontal,
+                          onDismissed: (_) {},
+                          confirmDismiss: (direction) async {
+                            if (direction == DismissDirection.endToStart) {
+                              sendNotification();
+                              return false;
+                            } else if (direction ==
+                                DismissDirection.startToEnd) {
+                              removeTodo(note);
+                              return true;
+                            }
+                            return false;
                           },
                           child: MemorListCard(note: note),
                         );
@@ -185,6 +197,13 @@ class _NotesScreenState extends State<NotesScreen> {
         ],
       ),
     );
+  }
+
+  void sendNotification() {
+    LocalNotifications.showSimpleNotifications(
+        title: "Let's remember!",
+        body: "First repetition",
+        payload: "This is a TOYOTA");
   }
 
   void addTodo(Notes notes) {
