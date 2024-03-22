@@ -51,4 +51,24 @@ class LocalNotifications {
     await _flutterLocalNotificationsPlugin
         .show(0, title, body, notificationDetails, payload: payload);
   }
+
+  //show a second notification
+  static Future showSecondNotifications({
+    required String title,
+    required String body,
+    required String payload,
+    int delayInSeconds = 4,
+  }) async {
+    await Future.delayed(Duration(seconds: delayInSeconds));
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
+  }
 }
