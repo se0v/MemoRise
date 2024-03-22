@@ -9,7 +9,10 @@ class AnotherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Note Title")),
-      body: Center(child: Text(payload)),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Center(child: Text(payload)),
+      ),
       floatingActionButton: Material(
         elevation: 4.0,
         borderRadius: BorderRadius.circular(16.0),

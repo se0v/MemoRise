@@ -201,7 +201,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   void sendNotification(String title, String subtitle) {
-    String payload = '$title\n $subtitle';
+    String payload = '$title\n\n$subtitle';
     LocalNotifications.showSimpleNotifications(
       title: "Let's remember!",
       body: "First repetition",
