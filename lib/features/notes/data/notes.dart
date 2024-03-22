@@ -1,5 +1,5 @@
 class Notes {
-  final String title;
+  late final String title;
   final String subtitle;
 
   Notes({this.title = '', this.subtitle = ''});

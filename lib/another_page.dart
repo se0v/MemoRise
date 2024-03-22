@@ -48,6 +48,6 @@ class AnotherPage extends StatelessWidget {
     LocalNotifications.showSecondNotifications(
         title: "Repeat again",
         body: "Second repetition",
-        payload: "This is a SANDWICH");
+        payload: "This is a TOYOTA");
   }
 }

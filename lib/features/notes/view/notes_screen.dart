@@ -5,9 +5,7 @@ import 'package:memorise/features/notes/data/notes.dart';
 import 'package:memorise/local_notifications.dart';
 
 class NotesScreen extends StatefulWidget {
-  const NotesScreen({
-    Key? key,
-  }) : super(key: key);
+  const NotesScreen({Key? key}) : super(key: key);
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
@@ -30,89 +28,7 @@ class _NotesScreenState extends State<NotesScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.primaryColor,
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Add a Note'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: _controller1,
-                      cursorColor: theme.colorScheme.secondary,
-                      decoration: InputDecoration(
-                        hintText: 'Title...',
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.secondary,
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextField(
-                      controller: _controller2,
-                      cursorColor: theme.colorScheme.secondary,
-                      decoration: InputDecoration(
-                        hintText: 'Description...',
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: theme.colorScheme.secondary,
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextButton(
-                      onPressed: () {
-                        final newTodo = Notes(
-                          title: _controller1.text,
-                          subtitle: _controller2.text,
-                        );
-                        addTodo(newTodo);
-                        _controller1.clear();
-                        _controller2.clear();
-                        Navigator.pop(context);
-                      },
-                      style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: theme.colorScheme.secondary,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        foregroundColor: theme.colorScheme.secondary,
-                      ),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: const Icon(
-                          Icons.save,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              );
-            },
-          );
-        },
+        onPressed: () => _showAddNoteDialog(context),
         child: const Icon(
           Icons.add,
           color: Color(0xFFEFF1F3),
@@ -169,7 +85,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           onDismissed: (_) {},
                           confirmDismiss: (direction) async {
                             if (direction == DismissDirection.endToStart) {
-                              sendNotification();
+                              sendNotification(note.title, note.subtitle);
                               return false;
                             } else if (direction ==
                                 DismissDirection.startToEnd) {
@@ -199,22 +115,109 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  void sendNotification() {
-    LocalNotifications.showSimpleNotifications(
-        title: "Let's remember!",
-        body: "First repetition",
-        payload: "This is a TOYOTA");
+  void _showAddNoteDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add a Note'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _controller1,
+                cursorColor: theme.colorScheme.secondary,
+                decoration: InputDecoration(
+                  hintText: 'Title...',
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.secondary,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _controller2,
+                cursorColor: theme.colorScheme.secondary,
+                decoration: InputDecoration(
+                  hintText: 'Description...',
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.secondary,
+                    ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: TextButton(
+                onPressed: () {
+                  final newNote = Notes(
+                    title: _controller1.text,
+                    subtitle: _controller2.text,
+                  );
+                  addNote(newNote);
+                  _controller1.clear();
+                  _controller2.clear();
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: theme.colorScheme.secondary,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  foregroundColor: theme.colorScheme.secondary,
+                ),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Icon(
+                    Icons.save,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
   }
 
-  void addTodo(Notes notes) {
+  void sendNotification(String title, String subtitle) {
+    String payload = '$title\n $subtitle';
+    LocalNotifications.showSimpleNotifications(
+      title: "Let's remember!",
+      body: "First repetition",
+      payload: payload,
+    );
+  }
+
+  void addNote(Notes note) {
     context.read<NotesBloc>().add(
-          AddNote(notes),
+          AddNote(note),
         );
   }
 
-  void removeTodo(Notes notes) {
+  void removeTodo(Notes note) {
     context.read<NotesBloc>().add(
-          RemoveNotes(notes),
+          RemoveNotes(note),
         );
   }
 
